@@ -1,6 +1,7 @@
 package com.waracle.androidtest;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -97,39 +97,19 @@ public class MainActivity extends AppCompatActivity {
             mListView.setAdapter(mAdapter);
 
             // Load data from net.
-            try {
-                JSONArray array = loadData();
-                mAdapter.setItems(array);
-            } catch (IOException | JSONException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
+            final DataLoader.DataListener dataListener = new DataLoader.DataListener() {
+                @Override
+                public void onDataLoaded(JSONArray jsonArray) {
+                    mAdapter.setItems(jsonArray);
+                }
 
+                @Override
+                public void onDataError() {
+                    // TODO: handle data error
+                }
+            };
 
-        private JSONArray loadData() throws IOException, JSONException {
-            URL url = new URL(JSON_URL);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            try {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                // Can you think of a way to improve the performance of loading data
-                // using HTTP headers???
-
-                // Also, Do you trust any utils thrown your way????
-
-                byte[] bytes = StreamUtils.readUnknownFully(in);
-
-                // Read in charset of HTTP content.
-                String charset = parseCharset(urlConnection.getRequestProperty("Content-Type"));
-
-                // Convert byte array to appropriate encoded string.
-                String jsonText = new String(bytes, charset);
-
-                // Read string as JSON.
-                return new JSONArray(jsonText);
-            } finally {
-                urlConnection.disconnect();
-            }
+            new DataLoader(dataListener).loadData(JSON_URL);
         }
 
         /**
@@ -210,6 +190,81 @@ public class MainActivity extends AppCompatActivity {
 
             void setItems(JSONArray items) {
                 mItems = items;
+                notifyDataSetChanged();
+            }
+        }
+
+        private static class DataLoader extends AsyncTask<String, Void, JSONArray> {
+
+            public interface DataListener {
+                void onDataLoaded(JSONArray jsonArray);
+                void onDataError();
+            }
+
+            private final DataListener dataListener;
+
+            DataLoader(DataListener dataListener) {
+                this.dataListener = dataListener;
+            }
+
+            void loadData(final String url)
+            {
+                executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+            }
+
+            @Override
+            protected JSONArray doInBackground(String... params) {
+
+                JSONArray jsonArray;
+                HttpURLConnection urlConnection = null;
+
+                try {
+                    if (params.length == 0) {
+                        throw new IllegalArgumentException("You must pass the URL as a parameter");
+                    }
+
+                    final URL url = new URL(params[0]);
+                    urlConnection = (HttpURLConnection) url.openConnection();
+
+                    final InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+                    // Can you think of a way to improve the performance of loading data
+                    // using HTTP headers???
+
+                    // Also, Do you trust any utils thrown your way????
+
+                    final byte[] bytes = StreamUtils.readUnknownFully(in);
+
+                    // Read in charset of HTTP content.
+                    final String charset = parseCharset(urlConnection.getRequestProperty("Content-Type"));
+
+                    // Convert byte array to appropriate encoded string.
+                    final String jsonText = new String(bytes, charset);
+
+                    // Read string as JSON.
+                    jsonArray = new JSONArray(jsonText);
+                }
+                catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                    jsonArray = null;
+                }
+                finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                }
+
+                return jsonArray;
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray jsonArray) {
+                if (jsonArray == null) {
+                    dataListener.onDataError();
+                }
+                else {
+                    dataListener.onDataLoaded(jsonArray);
+                }
             }
         }
     }
