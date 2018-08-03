@@ -1,7 +1,7 @@
 package com.waracle.androidtest;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -16,14 +16,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.waracle.androidtest.data.CakeDataLoader;
+import com.waracle.androidtest.data.ImageLoader;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.lang.ref.WeakReference;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public static class PlaceholderFragment extends ListFragment {
 
-        private static final String TAG = PlaceholderFragment.class.getSimpleName();
-
         private ListView mListView;
         private MyAdapter mAdapter;
 
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             mListView.setAdapter(mAdapter);
 
             // Load data from net.
-            final DataLoader.DataListener dataListener = new DataLoader.DataListener() {
+            final CakeDataLoader.Listener dataListener = new CakeDataLoader.Listener() {
                 @Override
                 public void onDataLoaded(JSONArray jsonArray) {
                     mAdapter.setItems(jsonArray);
@@ -109,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            new DataLoader(dataListener).loadData(JSON_URL);
+            new CakeDataLoader(dataListener).load(JSON_URL);
         }
 
         /**
@@ -135,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
 
             // Can you think of a better way to represent these items???
             private JSONArray mItems;
-            private ImageLoader mImageLoader;
 
             MyAdapter() {
                 this(new JSONArray());
@@ -143,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
             MyAdapter(JSONArray items) {
                 mItems = items;
-                mImageLoader = new ImageLoader();
             }
 
             @Override
@@ -179,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject object = (JSONObject) getItem(position);
                         title.setText(object.getString("title"));
                         desc.setText(object.getString("desc"));
-                        mImageLoader.load(object.getString("image"), image);
+                        loadImage(object.getString("image"), image);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -192,79 +188,28 @@ public class MainActivity extends AppCompatActivity {
                 mItems = items;
                 notifyDataSetChanged();
             }
-        }
 
-        private static class DataLoader extends AsyncTask<String, Void, JSONArray> {
-
-            public interface DataListener {
-                void onDataLoaded(JSONArray jsonArray);
-                void onDataError();
-            }
-
-            private final DataListener dataListener;
-
-            DataLoader(DataListener dataListener) {
-                this.dataListener = dataListener;
-            }
-
-            void loadData(final String url)
+            void loadImage(final String imageUrl, final ImageView imageView)
             {
-                executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
-            }
+                final WeakReference<ImageView> imageViewRef = new WeakReference<>(imageView);
 
-            @Override
-            protected JSONArray doInBackground(String... params) {
-
-                JSONArray jsonArray;
-                HttpURLConnection urlConnection = null;
-
-                try {
-                    if (params.length == 0) {
-                        throw new IllegalArgumentException("You must pass the URL as a parameter");
+                ImageLoader.Listener listener = new ImageLoader.Listener() {
+                    @Override
+                    public void onDataLoaded(Bitmap data) {
+                        final ImageView view = imageViewRef.get();
+                        if (view != null)
+                        {
+                            view.setImageBitmap(data);
+                        }
                     }
 
-                    final URL url = new URL(params[0]);
-                    urlConnection = (HttpURLConnection) url.openConnection();
-
-                    final InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                    // Can you think of a way to improve the performance of loading data
-                    // using HTTP headers???
-
-                    // Also, Do you trust any utils thrown your way????
-
-                    final byte[] bytes = StreamUtils.readUnknownFully(in);
-
-                    // Read in charset of HTTP content.
-                    final String charset = parseCharset(urlConnection.getRequestProperty("Content-Type"));
-
-                    // Convert byte array to appropriate encoded string.
-                    final String jsonText = new String(bytes, charset);
-
-                    // Read string as JSON.
-                    jsonArray = new JSONArray(jsonText);
-                }
-                catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                    jsonArray = null;
-                }
-                finally {
-                    if (urlConnection != null) {
-                        urlConnection.disconnect();
+                    @Override
+                    public void onDataError() {
+                        // TODO: handle error
                     }
-                }
+                };
 
-                return jsonArray;
-            }
-
-            @Override
-            protected void onPostExecute(JSONArray jsonArray) {
-                if (jsonArray == null) {
-                    dataListener.onDataError();
-                }
-                else {
-                    dataListener.onDataLoaded(jsonArray);
-                }
+                new ImageLoader(listener).load(imageUrl);
             }
         }
     }
