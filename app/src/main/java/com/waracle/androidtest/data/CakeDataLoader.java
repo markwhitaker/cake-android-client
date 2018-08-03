@@ -2,7 +2,7 @@ package com.waracle.androidtest.data;
 
 import android.util.Log;
 
-import com.waracle.androidtest.MainActivity;
+import com.waracle.androidtest.HttpUtils;
 import com.waracle.androidtest.StreamUtils;
 
 import org.json.JSONArray;
@@ -28,21 +28,19 @@ public class CakeDataLoader extends DataLoader<JSONArray> {
 
         JSONArray jsonArray;
         HttpURLConnection urlConnection = null;
+        InputStream inputStream = null;
 
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
+            inputStream = new BufferedInputStream(urlConnection.getInputStream());
 
-            final InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-            // Can you think of a way to improve the performance of loading data
-            // using HTTP headers???
-
-            // Also, Do you trust any utils thrown your way????
-
-            final byte[] bytes = StreamUtils.readUnknownFully(in);
+            final int contentLength = HttpUtils.getContentLength(urlConnection);
+            final byte[] bytes = (contentLength == HttpUtils.UNAVAILABLE_CONTENT_LENGTH)
+                    ? StreamUtils.readFully(inputStream)
+                    : StreamUtils.readFully(inputStream, contentLength);
 
             // Read in charset of HTTP content.
-            final String charset = MainActivity.PlaceholderFragment.parseCharset(urlConnection.getRequestProperty("Content-Type"));
+            final String charset = HttpUtils.getCharset(urlConnection);
 
             // Convert byte array to appropriate encoded string.
             final String jsonText = new String(bytes, charset);
@@ -55,6 +53,8 @@ public class CakeDataLoader extends DataLoader<JSONArray> {
             jsonArray = null;
         }
         finally {
+            StreamUtils.close(inputStream);
+
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }

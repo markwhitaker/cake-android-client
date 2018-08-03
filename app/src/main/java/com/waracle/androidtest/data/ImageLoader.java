@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.LruCache;
 
+import com.waracle.androidtest.HttpUtils;
 import com.waracle.androidtest.StreamUtils;
 
 import java.io.IOException;
@@ -49,7 +50,10 @@ public class ImageLoader extends DataLoader<Bitmap> {
             // Can you think of a way to make the entire
             // HTTP more efficient using HTTP headers??
 
-            final byte[] data = StreamUtils.readUnknownFully(inputStream);
+            final int contentLength = HttpUtils.getContentLength(connection);
+            final byte[] data = (contentLength == HttpUtils.UNAVAILABLE_CONTENT_LENGTH)
+                    ? StreamUtils.readFully(inputStream)
+                    : StreamUtils.readFully(inputStream, contentLength);
 
             bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
