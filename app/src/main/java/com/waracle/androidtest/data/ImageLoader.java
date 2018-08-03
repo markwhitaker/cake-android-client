@@ -5,8 +5,8 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.LruCache;
 
-import com.waracle.androidtest.HttpUtils;
-import com.waracle.androidtest.StreamUtils;
+import com.waracle.androidtest.utils.HttpUtils;
+import com.waracle.androidtest.utils.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

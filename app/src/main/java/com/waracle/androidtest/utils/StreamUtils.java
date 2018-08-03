@@ -1,4 +1,4 @@
-package com.waracle.androidtest;
+package com.waracle.androidtest.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,7 +49,7 @@ public final class StreamUtils {
             final int bytesRead = stream.read(bytes, totalBytesRead, sizeInBytes - totalBytesRead);
             totalBytesRead += bytesRead;
         }
-        StreamUtils.close(stream);
+        close(stream);
         return bytes;
     }
 
@@ -76,7 +76,7 @@ public final class StreamUtils {
         }
 
         final byte[] bytes = byteStream.toByteArray();
-        StreamUtils.close(byteStream);
+        close(byteStream);
 
         return bytes;
     }

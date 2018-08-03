@@ -2,8 +2,8 @@ package com.waracle.androidtest.data;
 
 import android.util.Log;
 
-import com.waracle.androidtest.HttpUtils;
-import com.waracle.androidtest.StreamUtils;
+import com.waracle.androidtest.utils.HttpUtils;
+import com.waracle.androidtest.utils.StreamUtils;
 import com.waracle.androidtest.model.Cake;
 
 import org.json.JSONArray;
