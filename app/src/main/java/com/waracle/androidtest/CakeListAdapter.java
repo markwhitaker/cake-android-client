@@ -3,6 +3,7 @@ package com.waracle.androidtest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CakeListAdapter extends BaseAdapter {
+
+    private static final String TAG = "CakeListAdapter";
 
     private final Context context;
     private final List<Cake> cakes = new ArrayList<>();
@@ -83,7 +86,12 @@ public class CakeListAdapter extends BaseAdapter {
 
             @Override
             public void onDataError() {
-                // TODO: handle error
+                Log.w(TAG, "Failed to load image at " + imageUrl + "; placeholder will be displayed");
+                final ImageView view = imageViewRef.get();
+                if (view != null)
+                {
+                    view.setImageResource(R.drawable.ic_cake);
+                }
             }
         };
 
