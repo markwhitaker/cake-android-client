@@ -44,6 +44,11 @@ abstract class DataLoader<T> extends AsyncTask<String, Void, T> {
 
     @Override
     protected final void onPostExecute(@Nullable final T data) {
+        if (isCancelled())
+        {
+            return;
+        }
+
         if (data == null) {
             listener.onDataError();
         }

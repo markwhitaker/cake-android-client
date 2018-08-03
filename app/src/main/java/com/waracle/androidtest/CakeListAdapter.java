@@ -3,6 +3,7 @@ package com.waracle.androidtest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,9 +68,15 @@ public final class CakeListAdapter extends BaseAdapter {
         return view;
     }
 
-    void setCakes(final List<Cake> cakes) {
+    void setCakes(@NonNull final List<Cake> cakes) {
         this.cakes.clear();
         this.cakes.addAll(cakes);
+        notifyDataSetChanged();
+    }
+
+    void clearCakes()
+    {
+        this.cakes.clear();
         notifyDataSetChanged();
     }
 

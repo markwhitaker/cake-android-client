@@ -19,16 +19,20 @@ import java.util.List;
  * Improve any performance issues
  * Use good coding practices to make code more secure
  */
-public class CakeListFragment extends ListFragment {
+public class CakeListFragment extends ListFragment implements CakeDataLoader.Listener {
 
-    private ListView mListView;
-    private CakeListAdapter mAdapter;
+    private ListView listView;
+    private CakeListAdapter adapter;
+    private View errorMessageView;
+    private View progressBarView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mListView = rootView.findViewById(android.R.id.list);
+        listView = rootView.findViewById(android.R.id.list);
+        errorMessageView = rootView.findViewById(R.id.error_message);
+        progressBarView = rootView.findViewById(R.id.progress_bar);
         return rootView;
     }
 
@@ -37,22 +41,32 @@ public class CakeListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         // Create and set the list adapter.
-        mAdapter = new CakeListAdapter(requireContext());
-        mListView.setAdapter(mAdapter);
+        adapter = new CakeListAdapter(requireContext());
+        listView.setAdapter(adapter);
 
-        // Load data from net.
-        final CakeDataLoader.Listener dataListener = new CakeDataLoader.Listener() {
-            @Override
-            public void onDataLoaded(final List<Cake> cakes) {
-                mAdapter.setCakes(cakes);
-            }
+        loadData();
+    }
 
-            @Override
-            public void onDataError() {
-                // TODO: handle data error
-            }
-        };
+    public void loadData() {
+        adapter.clearCakes();
+        switchToView(progressBarView);
+        new CakeDataLoader(this).load(BuildConfig.DATA_URL);
+    }
 
-        new CakeDataLoader(dataListener).load(BuildConfig.DATA_URL);
+    @Override
+    public void onDataLoaded(List<Cake> cakes) {
+        switchToView(listView);
+        adapter.setCakes(cakes);
+    }
+
+    @Override
+    public void onDataError() {
+        switchToView(errorMessageView);
+    }
+
+    private void switchToView(final View view) {
+        listView.setVisibility(listView == view ? View.VISIBLE : View.GONE);
+        errorMessageView.setVisibility(errorMessageView == view ? View.VISIBLE : View.GONE);
+        progressBarView.setVisibility(progressBarView == view ? View.VISIBLE : View.GONE);
     }
 }

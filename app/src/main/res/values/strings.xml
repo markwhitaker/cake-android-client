@@ -2,4 +2,5 @@
     <string name="app_name">AndroidTest</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_refresh">Refresh</string>
+    <string name="error_message_data_load_failed">The data you requested couldn\'t be loaded. Please try again using the Refresh menu item.</string>
 </resources>

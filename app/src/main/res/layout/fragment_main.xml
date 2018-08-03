@@ -1,8 +1,42 @@
-<ListView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CakeListFragment"
-    />
+    >
+
+    <!-- The list of cakes -->
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".CakeListFragment"
+        />
+
+    <!-- A simple error message -->
+    <TextView
+        android:id="@+id/error_message"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/error_message_text"
+        android:textColor="@color/error_message_text"
+        android:background="@color/error_message_background"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="@dimen/view_padding"
+        android:padding="@dimen/view_padding"
+        android:text="@string/error_message_data_load_failed"
+        />
+
+    <!-- A simple progress indicator -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+</FrameLayout>
+
