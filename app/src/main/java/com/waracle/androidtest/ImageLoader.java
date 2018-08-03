@@ -19,7 +19,7 @@ public class ImageLoader {
 
     private static final String TAG = ImageLoader.class.getSimpleName();
 
-    public ImageLoader() { /**/ }
+    ImageLoader() { /**/ }
 
     /**
      * Simple function for loading a bitmap image from the web

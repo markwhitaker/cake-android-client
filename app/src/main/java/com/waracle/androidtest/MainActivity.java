@@ -28,7 +28,7 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static String JSON_URL = "https://gist.githubusercontent.com/hart88/198f29ec5114a3ec3460/" +
+    private static final String JSON_URL = "https://gist.githubusercontent.com/hart88/198f29ec5114a3ec3460/" +
             "raw/8dd19a88f9b8d24c23d9960f3300d0c917a4f07c/cake.json";
 
     @Override
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            mListView = (ListView) rootView.findViewById(R.id.list);
+            mListView = rootView.findViewById(R.id.list);
             return rootView;
         }
 
@@ -157,11 +157,11 @@ public class MainActivity extends AppCompatActivity {
             private JSONArray mItems;
             private ImageLoader mImageLoader;
 
-            public MyAdapter() {
+            MyAdapter() {
                 this(new JSONArray());
             }
 
-            public MyAdapter(JSONArray items) {
+            MyAdapter(JSONArray items) {
                 mItems = items;
                 mImageLoader = new ImageLoader();
             }
@@ -192,9 +192,9 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
                 View root = inflater.inflate(R.layout.list_item_layout, parent, false);
                 if (root != null) {
-                    TextView title = (TextView) root.findViewById(R.id.title);
-                    TextView desc = (TextView) root.findViewById(R.id.desc);
-                    ImageView image = (ImageView) root.findViewById(R.id.image);
+                    TextView title = root.findViewById(R.id.title);
+                    TextView desc = root.findViewById(R.id.desc);
+                    ImageView image = root.findViewById(R.id.image);
                     try {
                         JSONObject object = (JSONObject) getItem(position);
                         title.setText(object.getString("title"));
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 return root;
             }
 
-            public void setItems(JSONArray items) {
+            void setItems(JSONArray items) {
                 mItems = items;
             }
         }
