@@ -3,6 +3,7 @@ package com.waracle.androidtest.data;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.util.LruCache;
 
 import com.waracle.androidtest.StreamUtils;
 
@@ -15,6 +16,8 @@ public class ImageLoader extends DataLoader<Bitmap> {
 
     private static final String TAG = "ImageLoader";
 
+    private static final LruCache<URL, Bitmap> bitmapCache = new LruCache<>(20);
+
     public interface Listener extends DataLoader.Listener<Bitmap> {
     }
 
@@ -25,7 +28,11 @@ public class ImageLoader extends DataLoader<Bitmap> {
     @Override
     protected Bitmap loadData(URL url) {
 
-        Bitmap bitmap;
+        Bitmap bitmap = bitmapCache.get(url);
+        if (bitmap != null) {
+            return bitmap;
+        }
+
         HttpURLConnection connection = null;
         InputStream inputStream = null;
 
@@ -45,6 +52,8 @@ public class ImageLoader extends DataLoader<Bitmap> {
             final byte[] data = StreamUtils.readUnknownFully(inputStream);
 
             bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            bitmapCache.put(url, bitmap);
         }
         catch (Exception e) {
             Log.e(TAG, e.getMessage());
