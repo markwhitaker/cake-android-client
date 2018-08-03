@@ -51,12 +51,10 @@ public class ImageLoader extends DataLoader<Bitmap> {
             // HTTP more efficient using HTTP headers??
 
             final int contentLength = HttpUtils.getContentLength(connection);
-            final byte[] data = (contentLength == HttpUtils.UNAVAILABLE_CONTENT_LENGTH)
-                    ? StreamUtils.readFully(inputStream)
-                    : StreamUtils.readFully(inputStream, contentLength);
-
+            final byte[] data = StreamUtils.readAllBytes(inputStream, contentLength);
             bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
+            // Add the bitmap to the cache
             bitmapCache.put(url, bitmap);
         }
         catch (Exception e) {

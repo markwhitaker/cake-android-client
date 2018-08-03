@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
 
 public final class HttpUtils {
 
-    public static final int UNAVAILABLE_CONTENT_LENGTH = -1;
-
     private static final String HEADER_NAME_CONTENT_LENGTH = "Content-Length";
     private static final String HEADER_NAME_CONTENT_TYPE = "Content-Type";
     private static final Pattern CHARSET_PATTERN = Pattern.compile("charset=(\\S+)");
@@ -27,7 +25,9 @@ public final class HttpUtils {
     }
 
     /**
-     * Get the value of the Content-Length header, or 0 if it can't be found/parsed
+     * Get the value of the Content-Length header
+     *
+     * @return Length of the Content-Length header, or 0 if it can't be parsed
      */
     public static int getContentLength(@NonNull HttpURLConnection connection) {
         final String contentLengthString = getHeaderValueOrEmptyString(connection, HEADER_NAME_CONTENT_LENGTH);
@@ -36,7 +36,7 @@ public final class HttpUtils {
             contentLength = Integer.valueOf(contentLengthString);
         }
         catch (NumberFormatException e) {
-            contentLength = UNAVAILABLE_CONTENT_LENGTH;
+            contentLength = 0;
         }
         return contentLength;
     }

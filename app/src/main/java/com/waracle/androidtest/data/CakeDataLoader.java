@@ -35,9 +35,7 @@ public class CakeDataLoader extends DataLoader<JSONArray> {
             inputStream = new BufferedInputStream(urlConnection.getInputStream());
 
             final int contentLength = HttpUtils.getContentLength(urlConnection);
-            final byte[] bytes = (contentLength == HttpUtils.UNAVAILABLE_CONTENT_LENGTH)
-                    ? StreamUtils.readFully(inputStream)
-                    : StreamUtils.readFully(inputStream, contentLength);
+            final byte[] bytes = StreamUtils.readAllBytes(inputStream, contentLength);
 
             // Read in charset of HTTP content.
             final String charset = HttpUtils.getCharset(urlConnection);
