@@ -3,7 +3,6 @@ package com.waracle.androidtest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +11,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.waracle.androidtest.data.ImageLoader;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.waracle.androidtest.model.Cake;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CakeListAdapter extends BaseAdapter {
 
     private final Context context;
-
-    // Can you think of a better way to represent these items???
-    private JSONArray items = new JSONArray();
+    private final List<Cake> cakes = new ArrayList<>();
 
     CakeListAdapter(final Context context) {
         this.context = context;
@@ -32,17 +28,12 @@ public class CakeListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return items.length();
+        return cakes.size();
     }
 
     @Override
     public Object getItem(int position) {
-        try {
-            return items.getJSONObject(position);
-        } catch (JSONException e) {
-            Log.e("", e.getMessage());
-        }
-        return null;
+        return cakes.get(position);
     }
 
     @Override
@@ -55,25 +46,24 @@ public class CakeListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View root = inflater.inflate(R.layout.list_item_layout, parent, false);
+
         if (root != null) {
-            TextView title = root.findViewById(R.id.title);
-            TextView desc = root.findViewById(R.id.desc);
-            ImageView image = root.findViewById(R.id.image);
-            try {
-                JSONObject object = (JSONObject) getItem(position);
-                title.setText(object.getString("title"));
-                desc.setText(object.getString("desc"));
-                loadImage(object.getString("image"), image);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            final TextView titleView = root.findViewById(R.id.title);
+            final TextView descriptionView = root.findViewById(R.id.desc);
+            final ImageView imageView = root.findViewById(R.id.image);
+
+            final Cake cake = (Cake) getItem(position);
+            titleView.setText(cake.getTitle());
+            descriptionView.setText(cake.getDescription());
+            loadImage(cake.getImageUrl(), imageView);
         }
 
         return root;
     }
 
-    void setItems(JSONArray items) {
-        this.items = items;
+    void setCakes(final List<Cake> cakes) {
+        this.cakes.clear();
+        this.cakes.addAll(cakes);
         notifyDataSetChanged();
     }
 

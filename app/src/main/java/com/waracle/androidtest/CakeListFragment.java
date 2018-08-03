@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.waracle.androidtest.data.CakeDataLoader;
+import com.waracle.androidtest.model.Cake;
 
-import org.json.JSONArray;
+import java.util.List;
 
 /**
  * Fragment is responsible for loading in some JSON and
@@ -42,8 +43,8 @@ public class CakeListFragment extends ListFragment {
         // Load data from net.
         final CakeDataLoader.Listener dataListener = new CakeDataLoader.Listener() {
             @Override
-            public void onDataLoaded(JSONArray jsonArray) {
-                mAdapter.setItems(jsonArray);
+            public void onDataLoaded(final List<Cake> cakes) {
+                mAdapter.setCakes(cakes);
             }
 
             @Override

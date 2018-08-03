@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.waracle.androidtest.HttpUtils;
 import com.waracle.androidtest.StreamUtils;
+import com.waracle.androidtest.model.Cake;
 
 import org.json.JSONArray;
 
@@ -11,12 +12,14 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CakeDataLoader extends DataLoader<JSONArray> {
+public class CakeDataLoader extends DataLoader<List<Cake>> {
 
     private static final String TAG = "CakeDataLoader";
 
-    public interface Listener extends DataLoader.Listener<JSONArray> {
+    public interface Listener extends DataLoader.Listener<List<Cake>> {
     }
 
     public CakeDataLoader(final Listener listener) {
@@ -24,9 +27,9 @@ public class CakeDataLoader extends DataLoader<JSONArray> {
     }
 
     @Override
-    protected JSONArray loadData(URL url) {
+    protected List<Cake> loadData(URL url) {
 
-        JSONArray jsonArray;
+        List<Cake> cakes = new ArrayList<>();
         HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
 
@@ -44,11 +47,16 @@ public class CakeDataLoader extends DataLoader<JSONArray> {
             final String jsonText = new String(bytes, charset);
 
             // Read string as JSON.
-            jsonArray = new JSONArray(jsonText);
+            final JSONArray jsonArray = new JSONArray(jsonText);
+
+            // Build model objects from the JSON array
+            for (int i = 0; i < jsonArray.length(); i++) {
+                cakes.add(new Cake(jsonArray.getJSONObject(i)));
+            }
         }
         catch (Exception e) {
             Log.e(TAG, e.getMessage());
-            jsonArray = null;
+            cakes = null;
         }
         finally {
             StreamUtils.close(inputStream);
@@ -58,6 +66,6 @@ public class CakeDataLoader extends DataLoader<JSONArray> {
             }
         }
 
-        return jsonArray;
+        return cakes;
     }
 }
