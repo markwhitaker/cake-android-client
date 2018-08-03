@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CakeListAdapter extends BaseAdapter {
+public final class CakeListAdapter extends BaseAdapter {
 
     private static final String TAG = "CakeListAdapter";
 
@@ -35,33 +35,36 @@ public class CakeListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Object getItem(final int position) {
         return cakes.get(position);
     }
 
     @Override
-    public long getItemId(int position) {
+    public long getItemId(final int position) {
         return 0;
     }
 
     @SuppressLint("ViewHolder")
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View root = inflater.inflate(R.layout.list_item_layout, parent, false);
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
 
-        if (root != null) {
-            final TextView titleView = root.findViewById(R.id.title);
-            final TextView descriptionView = root.findViewById(R.id.desc);
-            final ImageView imageView = root.findViewById(R.id.image);
+        final View view = (convertView == null)
+                ? LayoutInflater.from(context).inflate(R.layout.list_item_layout, parent, false)
+                : convertView;
 
-            final Cake cake = (Cake) getItem(position);
-            titleView.setText(cake.getTitle());
-            descriptionView.setText(cake.getDescription());
-            loadImage(cake.getImageUrl(), imageView);
-        }
+        final TextView titleView = view.findViewById(R.id.title);
+        final TextView descriptionView = view.findViewById(R.id.desc);
+        final ImageView imageView = view.findViewById(R.id.image);
 
-        return root;
+        // Reset image view to the placeholder image
+        imageView.setImageResource(R.drawable.ic_cake);
+
+        final Cake cake = (Cake) getItem(position);
+        titleView.setText(cake.getTitle());
+        descriptionView.setText(cake.getDescription());
+        loadImage(cake.getImageUrl(), imageView);
+
+        return view;
     }
 
     void setCakes(final List<Cake> cakes) {
@@ -87,11 +90,6 @@ public class CakeListAdapter extends BaseAdapter {
             @Override
             public void onDataError() {
                 Log.w(TAG, "Failed to load image at " + imageUrl + "; placeholder will be displayed");
-                final ImageView view = imageViewRef.get();
-                if (view != null)
-                {
-                    view.setImageResource(R.drawable.ic_cake);
-                }
             }
         };
 
