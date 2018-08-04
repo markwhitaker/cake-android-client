@@ -1,7 +1,8 @@
 package com.waracle.androidtest;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,7 @@ import com.waracle.androidtest.model.Cake;
 
 import java.util.List;
 
-/**
- * Fragment is responsible for loading in some JSON and
- * then displaying a list of cakes with images.
- * Fix any crashes
- * Improve any performance issues
- * Use good coding practices to make code more secure
- */
-public class CakeListFragment extends ListFragment implements CakeDataLoader.Listener {
+public class CakeListFragment extends Fragment implements CakeDataLoader.Listener {
 
     private ListView listView;
     private CakeListAdapter adapter;
@@ -27,8 +21,10 @@ public class CakeListFragment extends ListFragment implements CakeDataLoader.Lis
     private View progressBarView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull final LayoutInflater inflater,
+            final ViewGroup container,
+            final Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         listView = rootView.findViewById(android.R.id.list);
         errorMessageView = rootView.findViewById(R.id.error_message);
