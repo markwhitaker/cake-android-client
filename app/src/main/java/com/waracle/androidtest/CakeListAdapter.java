@@ -1,6 +1,5 @@
 package com.waracle.androidtest;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -45,7 +44,6 @@ public final class CakeListAdapter extends BaseAdapter {
         return 0;
     }
 
-    @SuppressLint("ViewHolder")
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
 
