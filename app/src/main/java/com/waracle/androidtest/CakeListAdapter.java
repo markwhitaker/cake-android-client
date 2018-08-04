@@ -55,9 +55,6 @@ public final class CakeListAdapter extends BaseAdapter {
         final TextView descriptionView = view.findViewById(R.id.desc);
         final ImageView imageView = view.findViewById(R.id.image);
 
-        // Reset image view to the placeholder image
-        imageView.setImageResource(R.drawable.ic_cake);
-
         final Cake cake = (Cake) getItem(position);
         titleView.setText(cake.getTitle());
         descriptionView.setText(cake.getDescription());

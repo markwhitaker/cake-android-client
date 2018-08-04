@@ -12,7 +12,7 @@ import java.io.InputStream;
 /**
  * Created by Riad on 20/05/2015.
  */
-public final class StreamUtils {
+class StreamUtils {
 
     private static final String TAG = "StreamUtils";
     private static final int BUFFER_SIZE = 4096;
@@ -25,11 +25,21 @@ public final class StreamUtils {
      * @return Array of bytes read from the stream
      * @throws IOException An error occurred reading the stream
      */
-    public static byte[] readAllBytes(@NonNull final InputStream stream, final int sizeInBytes) throws IOException {
+    static byte[] readAllBytes(@NonNull final InputStream stream, final int sizeInBytes) throws IOException {
         if (sizeInBytes > 0) {
             return readAll(stream, sizeInBytes);
         } else {
             return readAll(stream);
+        }
+    }
+
+    static void close(@Nullable final Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
+            }
         }
     }
 
@@ -64,31 +74,19 @@ public final class StreamUtils {
         // Read in stream of bytes
         final byte[] buffer = new byte[BUFFER_SIZE];
         final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        int totalBytesRead = 0;
 
         while (true) {
             int bytesRead = stream.read(buffer);
             if (bytesRead == -1) {
                 break;
             }
-            byteStream.write(buffer, totalBytesRead, bytesRead);
-            totalBytesRead += bytesRead;
+            byteStream.write(buffer, 0, bytesRead);
         }
 
         final byte[] bytes = byteStream.toByteArray();
         close(byteStream);
 
         return bytes;
-    }
-
-    public static void close(@Nullable final Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
     }
 
     private StreamUtils()
