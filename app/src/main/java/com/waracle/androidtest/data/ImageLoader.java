@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.LruCache;
 
-import com.waracle.androidtest.utils.HttpUtils;
+import com.waracle.androidtest.utils.HttpHelper;
 
 import java.net.URL;
 
@@ -27,8 +27,8 @@ public class ImageLoader extends DataLoader<Bitmap> {
             return bitmap;
         }
 
-        final HttpUtils httpUtils = new HttpUtils();
-        final byte[] data = httpUtils.getBytes(url);
+        final HttpHelper httpHelper = new HttpHelper();
+        final byte[] data = httpHelper.getBytes(url);
         bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
         // Add the bitmap to the cache

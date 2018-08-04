@@ -3,7 +3,7 @@ package com.waracle.androidtest.data;
 import android.util.Log;
 
 import com.waracle.androidtest.model.Cake;
-import com.waracle.androidtest.utils.HttpUtils;
+import com.waracle.androidtest.utils.HttpHelper;
 
 import org.json.JSONArray;
 
@@ -26,8 +26,8 @@ public class CakeDataLoader extends DataLoader<List<Cake>> {
     protected List<Cake> loadData(URL url) {
 
         final List<Cake> cakes = new ArrayList<>();
-        final HttpUtils httpUtils = new HttpUtils();
-        final String jsonText = httpUtils.getString(url);
+        final HttpHelper httpHelper = new HttpHelper();
+        final String jsonText = httpHelper.getString(url);
 
         try {
             // Read string as JSON.
