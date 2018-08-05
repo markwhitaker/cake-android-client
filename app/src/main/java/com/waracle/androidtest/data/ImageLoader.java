@@ -8,6 +8,9 @@ import com.waracle.androidtest.utils.HttpHelper;
 
 import java.net.URL;
 
+/**
+ * AsyncTask-derived class used for loading thumbnail images on a background thread
+ */
 public class ImageLoader extends DataLoader<Bitmap> {
 
     private static final LruCache<URL, Bitmap> bitmapCache = new LruCache<>(20);
@@ -22,6 +25,7 @@ public class ImageLoader extends DataLoader<Bitmap> {
     @Override
     protected Bitmap loadData(URL url) {
 
+        // Try to load the image from the cache first
         Bitmap bitmap = bitmapCache.get(url);
         if (bitmap != null) {
             return bitmap;

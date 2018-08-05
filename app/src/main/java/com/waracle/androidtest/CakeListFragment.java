@@ -25,7 +25,7 @@ public class CakeListFragment extends Fragment implements CakeDataLoader.Listene
             @NonNull final LayoutInflater inflater,
             final ViewGroup container,
             final Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         listView = rootView.findViewById(android.R.id.list);
         errorMessageView = rootView.findViewById(R.id.error_message);
         progressBarView = rootView.findViewById(R.id.progress_bar);

@@ -16,6 +16,9 @@ import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Utility class to issue HTTP GET requests and handle complexities like redirects.
+ */
 public class HttpHelper {
 
     private static final String TAG = "HttpHelper";

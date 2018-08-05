@@ -18,6 +18,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Standard list adapter for the list of cakes
+ */
 public final class CakeListAdapter extends BaseAdapter {
 
     private static final String TAG = "CakeListAdapter";
@@ -69,29 +72,28 @@ public final class CakeListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    void clearCakes()
-    {
+    void clearCakes() {
         this.cakes.clear();
         notifyDataSetChanged();
     }
 
-    private void loadImage(final String imageUrl, final ImageView imageView)
-    {
+    private void loadImage(final String imageUrl, final ImageView imageView) {
+        // Hold the ImageView in a WeakReference in case it's been garbage-collected by the time the
+        // image loads
         final WeakReference<ImageView> imageViewRef = new WeakReference<>(imageView);
 
         ImageLoader.Listener listener = new ImageLoader.Listener() {
             @Override
             public void onDataLoaded(Bitmap data) {
                 final ImageView view = imageViewRef.get();
-                if (view != null)
-                {
+                if (view != null) {
                     view.setImageBitmap(data);
                 }
             }
 
             @Override
             public void onDataError() {
-                Log.w(TAG, "Failed to load image at " + imageUrl + "; placeholder will be displayed");
+                Log.w(TAG, "Failed to load image at " + imageUrl);
             }
         };
 

@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * AsyncTask-derived class used for loading the cake JSON data on a background thread
+ */
 public class CakeDataLoader extends DataLoader<List<Cake>> {
 
     private static final String TAG = "CakeDataLoader";

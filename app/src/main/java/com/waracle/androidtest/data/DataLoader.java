@@ -7,6 +7,12 @@ import android.text.TextUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Abstract base class derived from AsyncTask, used to load some data in the background and inform
+ * a listener interface when the data loads or fails.
+ *
+ * @param <T> Type of data this loader returns
+ */
 abstract class DataLoader<T> extends AsyncTask<String, Void, T> {
 
     interface Listener<T> {
@@ -44,8 +50,7 @@ abstract class DataLoader<T> extends AsyncTask<String, Void, T> {
 
     @Override
     protected final void onPostExecute(@Nullable final T data) {
-        if (isCancelled())
-        {
+        if (isCancelled()) {
             return;
         }
 

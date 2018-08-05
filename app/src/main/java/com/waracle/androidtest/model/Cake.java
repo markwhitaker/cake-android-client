@@ -18,8 +18,7 @@ public final class Cake {
      * @param jsonObject JSON representation of a cake
      * @throws IllegalArgumentException JSON object doesn't represent a cake
      */
-    public Cake(final JSONObject jsonObject) throws IllegalArgumentException
-    {
+    public Cake(final JSONObject jsonObject) throws IllegalArgumentException {
         try {
             title = jsonObject.getString(JSON_ELEMENT_TITLE);
             description = jsonObject.getString(JSON_ELEMENT_DESCRIPTION);
