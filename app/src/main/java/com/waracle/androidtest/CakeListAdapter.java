@@ -61,6 +61,8 @@ public final class CakeListAdapter extends BaseAdapter {
         final Cake cake = (Cake) getItem(position);
         titleView.setText(cake.getTitle());
         descriptionView.setText(cake.getDescription());
+        imageView.setImageResource(android.R.color.transparent);
+
         loadImage(cake.getImageUrl(), imageView);
 
         return view;
