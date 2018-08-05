@@ -19,8 +19,9 @@ the expense of increasing the app's method count and surrendering maintenance re
 a third party that may not be dependable. Some also come with a steep learning curve and insufficient
 documentation. I always look at the balance of benefit vs. risk before using them.
 
-In this case, HTTP code is difficult to get right and costly to implement, so I'd add the
-well-supported libraries **Retrofit**, **Gson** and **Picasso** for doing the HTTP work.
+In this case, HTTP code is difficult to implement and maintain (my code still doesn't handle retries
+for example), so I'd add the well-supported libraries **Retrofit**, **Gson** and **Picasso** for
+doing the HTTP work.
 
 ### App architecture and testability
 
