@@ -12,9 +12,9 @@ import java.net.URL;
  *
  * @param <T> Type of data this loader returns
  */
-abstract class DataLoader<T> extends AsyncTask<Void, Void, T> {
+public abstract class DataLoader<T> extends AsyncTask<Void, Void, T> {
 
-    interface Listener<T> {
+    public interface Listener<T> {
         void onDataLoaded(String requestUrl, T data);
         void onDataError();
     }
@@ -22,7 +22,7 @@ abstract class DataLoader<T> extends AsyncTask<Void, Void, T> {
     private final String url;
     private final Listener listener;
 
-    DataLoader(final String url, final Listener listener) {
+    protected DataLoader(final String url, final Listener listener) {
         this.url = url;
         this.listener = listener;
     }
@@ -33,16 +33,12 @@ abstract class DataLoader<T> extends AsyncTask<Void, Void, T> {
     }
 
     @Override
-    protected final @Nullable T doInBackground(Void... params) {
-
-        URL u;
+    protected final @Nullable T doInBackground(final Void... params) {
         try {
-            u = new URL(url);
+            return loadData(new URL(url));
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Parameter is not a valid URL: " + params[0]);
         }
-
-        return loadData(u);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.waracle.androidtest.model;
+package com.waracle.androidtest.cakes.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;

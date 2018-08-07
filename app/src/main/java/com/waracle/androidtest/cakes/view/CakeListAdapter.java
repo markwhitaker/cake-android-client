@@ -1,4 +1,4 @@
-package com.waracle.androidtest;
+package com.waracle.androidtest.cakes.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,8 +11,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.waracle.androidtest.R;
 import com.waracle.androidtest.data.ImageLoader;
-import com.waracle.androidtest.model.Cake;
+import com.waracle.androidtest.cakes.model.Cake;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

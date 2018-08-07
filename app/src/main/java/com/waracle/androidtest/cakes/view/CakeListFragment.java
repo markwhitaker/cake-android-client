@@ -1,4 +1,4 @@
-package com.waracle.androidtest;
+package com.waracle.androidtest.cakes.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,17 +8,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.waracle.androidtest.data.CakeDataLoader;
-import com.waracle.androidtest.model.Cake;
+import com.waracle.androidtest.R;
+import com.waracle.androidtest.cakes.CakeContracts;
+import com.waracle.androidtest.cakes.model.Cake;
+import com.waracle.androidtest.cakes.presenter.CakeDataLoader;
 
 import java.util.List;
 
-public class CakeListFragment extends Fragment implements CakeDataLoader.Listener {
+public class CakeListFragment extends Fragment implements CakeDataLoader.Listener, CakeContracts.ListView {
 
+    private CakeContracts.ListPresenter presenter;
     private ListView listView;
     private CakeListAdapter adapter;
     private View errorMessageView;
     private View progressBarView;
+
+
+    public void setPresenter(CakeContracts.ListPresenter presenter) {
+        this.presenter = presenter;
+    }
 
     @Override
     public View onCreateView(
@@ -40,23 +48,33 @@ public class CakeListFragment extends Fragment implements CakeDataLoader.Listene
         adapter = new CakeListAdapter(requireContext());
         listView.setAdapter(adapter);
 
-        loadData();
-    }
-
-    public void loadData() {
-        adapter.clearCakes();
-        switchToView(progressBarView);
-        new CakeDataLoader(BuildConfig.DATA_URL, this).load();
+        if (presenter != null) {
+            presenter.onViewReady();
+        }
     }
 
     @Override
     public void onDataLoaded(final String requestUrl, final List<Cake> cakes) {
+    }
+
+    @Override
+    public void onDataError() {
+    }
+
+    @Override
+    public void showCakesLoading() {
+        adapter.clearCakes();
+        switchToView(progressBarView);
+    }
+
+    @Override
+    public void showCakes(List<Cake> cakes) {
         switchToView(listView);
         adapter.setCakes(cakes);
     }
 
     @Override
-    public void onDataError() {
+    public void showCakesLoadError() {
         switchToView(errorMessageView);
     }
 

@@ -5,27 +5,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.waracle.androidtest.cakes.CakeContracts;
+import com.waracle.androidtest.cakes.presenter.CakeListPresenter;
+import com.waracle.androidtest.cakes.view.CakeListFragment;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String FRAGMENT_TAG = "cakeListFragment";
 
-    private CakeListFragment cakeListFragment;
+    private CakeContracts.ListPresenter cakeListPresenter;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            cakeListFragment = new CakeListFragment();
+        final boolean freshStart = (savedInstanceState == null);
+
+        final CakeListFragment cakeListFragment = (freshStart)
+                ? new CakeListFragment()
+                : (CakeListFragment)getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+
+        cakeListPresenter = new CakeListPresenter(cakeListFragment);
+        cakeListFragment.setPresenter(cakeListPresenter);
+
+        if (freshStart)
+        {
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container, cakeListFragment, FRAGMENT_TAG)
                     .commit();
-        }
-        else {
-            cakeListFragment = (CakeListFragment)getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
         }
     }
 
@@ -40,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            cakeListFragment.loadData();
+            cakeListPresenter.refresh();
             return true;
         }
 

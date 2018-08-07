@@ -1,8 +1,9 @@
-package com.waracle.androidtest.data;
+package com.waracle.androidtest.cakes.presenter;
 
 import android.util.Log;
 
-import com.waracle.androidtest.model.Cake;
+import com.waracle.androidtest.cakes.model.Cake;
+import com.waracle.androidtest.data.DataLoader;
 import com.waracle.androidtest.utils.HttpHelper;
 
 import org.json.JSONArray;
@@ -21,12 +22,12 @@ public class CakeDataLoader extends DataLoader<List<Cake>> {
     public interface Listener extends DataLoader.Listener<List<Cake>> {
     }
 
-    public CakeDataLoader(final String url, final Listener listener) {
+    CakeDataLoader(final String url, final Listener listener) {
         super(url, listener);
     }
 
     @Override
-    protected List<Cake> loadData(URL url) {
+    protected List<Cake> loadData(final URL url) {
 
         final List<Cake> cakes = new ArrayList<>();
         final HttpHelper httpHelper = new HttpHelper();
@@ -43,7 +44,7 @@ public class CakeDataLoader extends DataLoader<List<Cake>> {
 
             return cakes;
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             Log.e(TAG, e.getMessage());
             return null;
         }
