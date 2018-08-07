@@ -3,7 +3,6 @@ package com.waracle.androidtest.cakes.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +11,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.waracle.androidtest.R;
-import com.waracle.androidtest.data.ImageLoader;
+import com.waracle.androidtest.cakes.CakeContracts;
 import com.waracle.androidtest.cakes.model.Cake;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Standard list adapter for the list of cakes
  */
 public final class CakeListAdapter extends BaseAdapter {
 
-    private static final String TAG = "CakeListAdapter";
-
     private final Context context;
+    private final CakeContracts.ListPresenter presenter;
     private final List<Cake> cakes = new ArrayList<>();
+    private final Map<ImageView, String> imageUrlMap = new WeakHashMap<>();
 
-    CakeListAdapter(final Context context) {
+    CakeListAdapter(final Context context, final CakeContracts.ListPresenter presenter) {
         this.context = context;
+        this.presenter = presenter;
     }
 
     @Override
@@ -81,28 +82,19 @@ public final class CakeListAdapter extends BaseAdapter {
     }
 
     private void loadImage(final String imageUrl, final ImageView imageView) {
-        // Store the URL against the ImageView so we can tell if the ImageView is still showing the
-        // same cake when the image load completes.
-        imageView.setTag(imageUrl);
-        // Hold the ImageView in a WeakReference in case it's been garbage-collected by the time the
-        // image loads
-        final WeakReference<ImageView> imageViewRef = new WeakReference<>(imageView);
+        synchronized (imageUrlMap) {
+            imageUrlMap.put(imageView, imageUrl);
+        }
+        presenter.loadThumbnailImage(imageUrl);
+    }
 
-        final ImageLoader.Listener listener = new ImageLoader.Listener() {
-            @Override
-            public void onDataLoaded(final String requestUrl, final Bitmap data) {
-                final ImageView view = imageViewRef.get();
-                if (view != null && view.getTag().equals(imageUrl)) {
-                    view.setImageBitmap(data);
+    void showCakeThumbnailImage(final String imageUrl, final Bitmap bitmap) {
+        synchronized (imageUrlMap) {
+            for (final Map.Entry<ImageView, String> entry : imageUrlMap.entrySet()) {
+                if (entry.getValue().equals(imageUrl)) {
+                    entry.getKey().setImageBitmap(bitmap);
                 }
             }
-
-            @Override
-            public void onDataError() {
-                Log.w(TAG, "Failed to load image at " + imageUrl);
-            }
-        };
-
-        new ImageLoader(imageUrl, listener).load();
+        }
     }
 }

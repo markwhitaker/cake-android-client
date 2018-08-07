@@ -1,5 +1,6 @@
 package com.waracle.androidtest.cakes.view;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,11 +12,10 @@ import android.widget.ListView;
 import com.waracle.androidtest.R;
 import com.waracle.androidtest.cakes.CakeContracts;
 import com.waracle.androidtest.cakes.model.Cake;
-import com.waracle.androidtest.cakes.presenter.CakeDataLoader;
 
 import java.util.List;
 
-public class CakeListFragment extends Fragment implements CakeDataLoader.Listener, CakeContracts.ListView {
+public class CakeListFragment extends Fragment implements CakeContracts.ListView {
 
     private CakeContracts.ListPresenter presenter;
     private ListView listView;
@@ -44,21 +44,13 @@ public class CakeListFragment extends Fragment implements CakeDataLoader.Listene
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Create and set the list adapter.
-        adapter = new CakeListAdapter(requireContext());
-        listView.setAdapter(adapter);
-
         if (presenter != null) {
+            // Create and set the list adapter.
+            adapter = new CakeListAdapter(requireContext(), presenter);
+            listView.setAdapter(adapter);
+
             presenter.onViewReady();
         }
-    }
-
-    @Override
-    public void onDataLoaded(final String requestUrl, final List<Cake> cakes) {
-    }
-
-    @Override
-    public void onDataError() {
     }
 
     @Override
@@ -76,6 +68,11 @@ public class CakeListFragment extends Fragment implements CakeDataLoader.Listene
     @Override
     public void showCakesLoadError() {
         switchToView(errorMessageView);
+    }
+
+    @Override
+    public void showCakeThumbnailImage(final String imageUrl, final Bitmap bitmap) {
+        adapter.showCakeThumbnailImage(imageUrl, bitmap);
     }
 
     private void switchToView(final View view) {

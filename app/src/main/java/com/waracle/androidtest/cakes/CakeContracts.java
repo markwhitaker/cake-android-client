@@ -1,5 +1,7 @@
 package com.waracle.androidtest.cakes;
 
+import android.graphics.Bitmap;
+
 import com.waracle.androidtest.cakes.model.Cake;
 
 import java.util.List;
@@ -13,11 +15,13 @@ public final class CakeContracts {
         void showCakesLoading();
         void showCakes(List<Cake> cakes);
         void showCakesLoadError();
+        void showCakeThumbnailImage(String imageUrl, Bitmap bitmap);
     }
 
     public interface ListPresenter {
         void onViewReady();
         void refresh();
+        void loadThumbnailImage(String imageUrl);
     }
 
     private CakeContracts(){

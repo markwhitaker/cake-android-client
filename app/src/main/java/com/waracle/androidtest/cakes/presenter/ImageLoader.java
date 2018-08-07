@@ -1,9 +1,10 @@
-package com.waracle.androidtest.data;
+package com.waracle.androidtest.cakes.presenter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.LruCache;
 
+import com.waracle.androidtest.data.DataLoader;
 import com.waracle.androidtest.utils.HttpHelper;
 
 import java.net.URL;
@@ -11,19 +12,19 @@ import java.net.URL;
 /**
  * AsyncTask-derived class used for loading thumbnail images on a background thread
  */
-public class ImageLoader extends DataLoader<Bitmap> {
+class ImageLoader extends DataLoader<Bitmap> {
 
     private static final LruCache<URL, Bitmap> bitmapCache = new LruCache<>(20);
 
-    public interface Listener extends DataLoader.Listener<Bitmap> {
+    interface Listener extends DataLoader.Listener<Bitmap> {
     }
 
-    public ImageLoader(final String url, final Listener listener) {
+    ImageLoader(final String url, final Listener listener) {
         super(url, listener);
     }
 
     @Override
-    protected Bitmap loadData(URL url) {
+    protected Bitmap loadData(final URL url) {
 
         // Try to load the image from the cache first
         Bitmap bitmap = bitmapCache.get(url);

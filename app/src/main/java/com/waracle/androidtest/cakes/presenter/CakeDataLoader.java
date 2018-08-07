@@ -15,11 +15,11 @@ import java.util.List;
 /**
  * AsyncTask-derived class used for loading the cake JSON data on a background thread
  */
-public class CakeDataLoader extends DataLoader<List<Cake>> {
+class CakeDataLoader extends DataLoader<List<Cake>> {
 
     private static final String TAG = "CakeDataLoader";
 
-    public interface Listener extends DataLoader.Listener<List<Cake>> {
+    interface Listener extends DataLoader.Listener<List<Cake>> {
     }
 
     CakeDataLoader(final String url, final Listener listener) {
