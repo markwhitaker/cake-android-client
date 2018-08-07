@@ -33,7 +33,7 @@ public class CakeListFragment extends Fragment implements CakeDataLoader.Listene
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         // Create and set the list adapter.
@@ -46,11 +46,11 @@ public class CakeListFragment extends Fragment implements CakeDataLoader.Listene
     public void loadData() {
         adapter.clearCakes();
         switchToView(progressBarView);
-        new CakeDataLoader(this).load(BuildConfig.DATA_URL);
+        new CakeDataLoader(BuildConfig.DATA_URL, this).load();
     }
 
     @Override
-    public void onDataLoaded(List<Cake> cakes) {
+    public void onDataLoaded(final String requestUrl, final List<Cake> cakes) {
         switchToView(listView);
         adapter.setCakes(cakes);
     }

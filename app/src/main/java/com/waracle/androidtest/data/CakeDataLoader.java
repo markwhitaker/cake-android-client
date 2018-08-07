@@ -21,8 +21,8 @@ public class CakeDataLoader extends DataLoader<List<Cake>> {
     public interface Listener extends DataLoader.Listener<List<Cake>> {
     }
 
-    public CakeDataLoader(final Listener listener) {
-        super(listener);
+    public CakeDataLoader(final String url, final Listener listener) {
+        super(url, listener);
     }
 
     @Override

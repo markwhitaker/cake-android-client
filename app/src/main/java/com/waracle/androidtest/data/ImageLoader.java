@@ -18,8 +18,8 @@ public class ImageLoader extends DataLoader<Bitmap> {
     public interface Listener extends DataLoader.Listener<Bitmap> {
     }
 
-    public ImageLoader(Listener listener) {
-        super(listener);
+    public ImageLoader(final String url, final Listener listener) {
+        super(url, listener);
     }
 
     @Override

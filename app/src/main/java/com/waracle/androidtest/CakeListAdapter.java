@@ -80,15 +80,18 @@ public final class CakeListAdapter extends BaseAdapter {
     }
 
     private void loadImage(final String imageUrl, final ImageView imageView) {
+        // Store the URL against the ImageView so we can tell if the ImageView is still showing the
+        // same cake when the image load completes.
+        imageView.setTag(imageUrl);
         // Hold the ImageView in a WeakReference in case it's been garbage-collected by the time the
         // image loads
         final WeakReference<ImageView> imageViewRef = new WeakReference<>(imageView);
 
-        ImageLoader.Listener listener = new ImageLoader.Listener() {
+        final ImageLoader.Listener listener = new ImageLoader.Listener() {
             @Override
-            public void onDataLoaded(Bitmap data) {
+            public void onDataLoaded(final String requestUrl, final Bitmap data) {
                 final ImageView view = imageViewRef.get();
-                if (view != null) {
+                if (view != null && view.getTag().equals(imageUrl)) {
                     view.setImageBitmap(data);
                 }
             }
@@ -99,6 +102,6 @@ public final class CakeListAdapter extends BaseAdapter {
             }
         };
 
-        new ImageLoader(listener).load(imageUrl);
+        new ImageLoader(imageUrl, listener).load();
     }
 }

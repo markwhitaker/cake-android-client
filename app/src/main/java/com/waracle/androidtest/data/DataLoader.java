@@ -2,7 +2,6 @@ package com.waracle.androidtest.data;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,39 +12,37 @@ import java.net.URL;
  *
  * @param <T> Type of data this loader returns
  */
-abstract class DataLoader<T> extends AsyncTask<String, Void, T> {
+abstract class DataLoader<T> extends AsyncTask<Void, Void, T> {
 
     interface Listener<T> {
-        void onDataLoaded(T data);
+        void onDataLoaded(String requestUrl, T data);
         void onDataError();
     }
 
+    private final String url;
     private final Listener listener;
 
-    DataLoader(final Listener listener) {
+    DataLoader(final String url, final Listener listener) {
+        this.url = url;
         this.listener = listener;
     }
 
-    public void load(final String url)
+    public void load()
     {
-        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
-    protected final @Nullable T doInBackground(String... params) {
+    protected final @Nullable T doInBackground(Void... params) {
 
-        if (params.length == 0 || TextUtils.isEmpty(params[0])) {
-            throw new IllegalArgumentException("You must pass the data's URL as the first parameter");
-        }
-
-        URL url;
+        URL u;
         try {
-            url = new URL(params[0]);
+            u = new URL(url);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Parameter is not a valid URL: " + params[0]);
         }
 
-        return loadData(url);
+        return loadData(u);
     }
 
     @Override
@@ -59,7 +56,7 @@ abstract class DataLoader<T> extends AsyncTask<String, Void, T> {
         }
         else {
             //noinspection unchecked
-            listener.onDataLoaded(data);
+            listener.onDataLoaded(url, data);
         }
     }
 
