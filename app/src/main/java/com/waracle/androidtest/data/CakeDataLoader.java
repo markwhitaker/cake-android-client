@@ -1,5 +1,6 @@
 package com.waracle.androidtest.data;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.waracle.androidtest.model.Cake;
@@ -21,12 +22,12 @@ public class CakeDataLoader extends DataLoader<List<Cake>> {
     public interface Listener extends DataLoader.Listener<List<Cake>> {
     }
 
-    public CakeDataLoader(final String url, final Listener listener) {
+    public CakeDataLoader(@NonNull final String url, @NonNull final Listener listener) {
         super(url, listener);
     }
 
     @Override
-    protected List<Cake> loadData(URL url) {
+    protected List<Cake> loadData(@NonNull URL url) {
 
         final List<Cake> cakes = new ArrayList<>();
         final HttpHelper httpHelper = new HttpHelper();

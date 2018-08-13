@@ -28,7 +28,7 @@ public final class CakeListAdapter extends BaseAdapter {
     private final Context context;
     private final List<Cake> cakes = new ArrayList<>();
 
-    CakeListAdapter(final Context context) {
+    CakeListAdapter(@NonNull final Context context) {
         this.context = context;
     }
 
@@ -79,7 +79,7 @@ public final class CakeListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    private void loadImage(final String imageUrl, final ImageView imageView) {
+    private void loadImage(@NonNull final String imageUrl, @NonNull final ImageView imageView) {
         // Store the URL against the ImageView so we can tell if the ImageView is still showing the
         // same cake when the image load completes.
         imageView.setTag(imageUrl);

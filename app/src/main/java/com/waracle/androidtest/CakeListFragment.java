@@ -60,7 +60,7 @@ public class CakeListFragment extends Fragment implements CakeDataLoader.Listene
         switchToView(errorMessageView);
     }
 
-    private void switchToView(final View view) {
+    private void switchToView(@NonNull final View view) {
         listView.setVisibility(listView == view ? View.VISIBLE : View.GONE);
         errorMessageView.setVisibility(errorMessageView == view ? View.VISIBLE : View.GONE);
         progressBarView.setVisibility(progressBarView == view ? View.VISIBLE : View.GONE);

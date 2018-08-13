@@ -1,5 +1,7 @@
 package com.waracle.androidtest.model;
 
+import android.support.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,9 +10,9 @@ public final class Cake {
     private static final String JSON_ELEMENT_DESCRIPTION = "desc";
     private static final String JSON_ELEMENT_IMAGE_URL = "image";
 
-    private String title;
-    private String description;
-    private String imageUrl;
+    private final String title;
+    private final String description;
+    private final String imageUrl;
 
     /**
      * Construct a cake from its JSON representation
@@ -18,7 +20,7 @@ public final class Cake {
      * @param jsonObject JSON representation of a cake
      * @throws IllegalArgumentException JSON object doesn't represent a cake
      */
-    public Cake(final JSONObject jsonObject) throws IllegalArgumentException {
+    public Cake(@NonNull final JSONObject jsonObject) throws IllegalArgumentException {
         try {
             title = jsonObject.getString(JSON_ELEMENT_TITLE);
             description = jsonObject.getString(JSON_ELEMENT_DESCRIPTION);
@@ -29,15 +31,15 @@ public final class Cake {
         }
     }
 
-    public String getTitle() {
+    public @NonNull String getTitle() {
         return title;
     }
 
-    public String getDescription() {
+    public @NonNull String getDescription() {
         return description;
     }
 
-    public String getImageUrl() {
+    public @NonNull String getImageUrl() {
         return imageUrl;
     }
 }

@@ -34,7 +34,7 @@ public class HttpHelper {
     private int contentLength;
     private String charset;
 
-    public byte[] getBytes(final URL url) {
+    public @Nullable byte[] getBytes(@NonNull final URL url) {
 
         byte[] data = null;
         InputStream inputStream = null;
@@ -59,19 +59,22 @@ public class HttpHelper {
         return data;
     }
 
-    public String getString(final URL url) {
+    public @Nullable String getString(@NonNull final URL url) {
 
-        final byte[] data = getBytes(url);
-        String string = "";
-        try {
-            string = new String(data, charset);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, e.getMessage());
+        final byte[] bytes = getBytes(url);
+        String string = null;
+        if (bytes != null) {
+            try {
+                string = new String(bytes, charset);
+            }
+            catch (UnsupportedEncodingException e) {
+                Log.e(TAG, e.getMessage());
+            }
         }
         return string;
     }
 
-    private void openConnection(final URL url) throws IOException {
+    private void openConnection(@NonNull final URL url) throws IOException {
 
         URL redirectUrl = url;
 
@@ -119,7 +122,7 @@ public class HttpHelper {
      * @return Array of bytes read from the stream
      * @throws IOException An error occurred reading the stream
      */
-    private byte[] readAllBytes(@NonNull final InputStream stream, final int sizeInBytes) throws IOException {
+    private @NonNull byte[] readAllBytes(@NonNull final InputStream stream, final int sizeInBytes) throws IOException {
         // Read in stream of bytes
         byte[] bytes = new byte[sizeInBytes];
         int totalBytesRead = 0;
@@ -138,7 +141,7 @@ public class HttpHelper {
      * @return Array of bytes read from the stream
      * @throws IOException An error occurred reading the stream
      */
-    private byte[] readAllBytes(@NonNull final InputStream stream) throws IOException {
+    private @NonNull byte[] readAllBytes(@NonNull final InputStream stream) throws IOException {
         // Read in stream of bytes
         final byte[] buffer = new byte[BUFFER_SIZE];
         final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();

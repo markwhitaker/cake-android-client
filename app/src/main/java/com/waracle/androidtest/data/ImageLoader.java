@@ -2,6 +2,7 @@ package com.waracle.androidtest.data;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.util.LruCache;
 
 import com.waracle.androidtest.utils.HttpHelper;
@@ -18,13 +19,12 @@ public class ImageLoader extends DataLoader<Bitmap> {
     public interface Listener extends DataLoader.Listener<Bitmap> {
     }
 
-    public ImageLoader(final String url, final Listener listener) {
+    public ImageLoader(@NonNull final String url, @NonNull final Listener listener) {
         super(url, listener);
     }
 
     @Override
-    protected Bitmap loadData(URL url) {
-
+    protected Bitmap loadData(@NonNull final URL url) {
         // Try to load the image from the cache first
         Bitmap bitmap = bitmapCache.get(url);
         if (bitmap != null) {

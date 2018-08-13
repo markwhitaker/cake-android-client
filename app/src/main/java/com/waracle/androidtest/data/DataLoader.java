@@ -1,6 +1,7 @@
 package com.waracle.androidtest.data;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.net.MalformedURLException;
@@ -22,7 +23,7 @@ abstract class DataLoader<T> extends AsyncTask<Void, Void, T> {
     private final String url;
     private final Listener listener;
 
-    DataLoader(final String url, final Listener listener) {
+    DataLoader(@NonNull final String url, @NonNull final Listener listener) {
         this.url = url;
         this.listener = listener;
     }
@@ -33,16 +34,12 @@ abstract class DataLoader<T> extends AsyncTask<Void, Void, T> {
     }
 
     @Override
-    protected final @Nullable T doInBackground(Void... params) {
-
-        URL u;
+    protected final @Nullable T doInBackground(@Nullable final Void... params) {
         try {
-            u = new URL(url);
+            return loadData(new URL(url));
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Parameter is not a valid URL: " + params[0]);
+            throw new IllegalArgumentException("Parameter is not a valid URL: " + url);
         }
-
-        return loadData(u);
     }
 
     @Override
